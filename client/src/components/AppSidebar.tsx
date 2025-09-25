@@ -10,6 +10,7 @@ import {
   Home,
   Bot
 } from "lucide-react"
+import { Link } from "wouter"
 
 import {
   Sidebar,
@@ -108,10 +109,9 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild
-                    onClick={() => console.log(`Navigate to ${item.url}`)}
                     data-testid={`sidebar-${item.title.toLowerCase().replace(' ', '-')}`}
                   >
-                    <a href="#" className="flex items-center justify-between w-full">
+                    <Link href={item.url} className="flex items-center justify-between w-full">
                       <div className="flex items-center gap-2">
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
@@ -124,7 +124,7 @@ export function AppSidebar() {
                           {item.badge}
                         </Badge>
                       )}
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -140,13 +140,12 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild
-                    onClick={() => console.log(`Navigate to ${item.url}`)}
                     data-testid={`sidebar-${item.title.toLowerCase()}`}
                   >
-                    <a href="#" className="flex items-center gap-2">
+                    <Link href={item.url} className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -162,13 +161,12 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild
-                    onClick={() => console.log(`Navigate to ${item.url}`)}
                     data-testid={`sidebar-${item.title.toLowerCase()}`}
                   >
-                    <a href="#" className="flex items-center gap-2">
+                    <Link href={item.url} className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

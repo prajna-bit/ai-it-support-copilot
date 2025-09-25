@@ -17,7 +17,16 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/chat" component={ChatInterface} />
       <Route path="/dashboard" component={Dashboard} />
-      {/* TODO: Add more routes for incidents, knowledge base, reports, etc. */}
+      
+      {/* Map sidebar routes to existing pages */}
+      <Route path="/incidents" component={Dashboard} />
+      <Route path="/knowledge" component={Dashboard} />
+      <Route path="/search" component={ChatInterface} />
+      <Route path="/reports" component={Dashboard} />
+      <Route path="/learning" component={ChatInterface} />
+      <Route path="/team" component={Dashboard} />
+      <Route path="/settings" component={Dashboard} />
+      
       <Route component={NotFound} />
     </Switch>
   );
