@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 import Dashboard from "@/pages/Dashboard";
 import ChatInterface from "@/pages/ChatInterface";
 import KnowledgeBase from "@/pages/KnowledgeBase";
+import Search from "@/pages/Search";
 import ServiceNow from "@/pages/ServiceNow";
 import Learning from "@/pages/Learning";
 import Teams from "@/pages/Teams";
@@ -26,7 +27,7 @@ function Router() {
       {/* Dedicated feature pages */}
       <Route path="/incidents" component={ServiceNow} />
       <Route path="/knowledge" component={KnowledgeBase} />
-      <Route path="/search" component={KnowledgeBase} />
+      <Route path="/search" component={Search} />
       <Route path="/reports" component={Dashboard} />
       <Route path="/learning" component={Learning} />
       <Route path="/team" component={Teams} />

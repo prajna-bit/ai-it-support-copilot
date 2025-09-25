@@ -517,7 +517,92 @@ function generateServiceNowAnalysis(incident: any, relevantKB: any[]): string {
 function generateFallbackResponse(message: string, relevantKB: any[]): string {
   const msgLower = message.toLowerCase();
   
-  // Analyze the incident type
+  // Handle basic conversational queries first
+  if (msgLower.match(/^(hi|hello|hey|good morning|good afternoon|good evening)(!|\.|\s)*$/)) {
+    return `👋 **Hello! Welcome to your AI IT Support Assistant!**
+
+I'm here to help you with all your IT support needs. Here's what I can do for you:
+
+🔧 **Incident Analysis** - Describe any IT issue and I'll analyze it with priority assessment
+📚 **Knowledge Base Search** - Find troubleshooting guides and solutions  
+🎫 **ServiceNow Integration** - View and analyze incidents with AI recommendations
+📖 **Learning & Training** - Generate quizzes to test your IT knowledge
+
+**Try asking me about:**
+• "My computer is running slow"
+• "Email not working" 
+• "Blue screen error"
+• "Network connectivity issues"
+• "Help with printer problems"
+
+How can I assist you today?`;
+  }
+
+  if (msgLower.match(/^(help|what can you do|commands|options|how to use|guide)(!|\.|\s)*$/)) {
+    return `🤖 **AI Support Assistant - Help Guide**
+
+**What I can help you with:**
+
+🔍 **Incident Analysis & Troubleshooting**
+• Describe any IT problem and I'll provide intelligent analysis
+• Get priority assessment and step-by-step solutions
+• Access relevant knowledge base articles automatically
+
+📋 **Available Commands & Features:**
+• **"help"** - Show this help guide
+• **"hi/hello"** - Get a friendly greeting and overview
+• **Describe any IT issue** - Get instant analysis and recommendations
+
+**Knowledge Areas I Cover:**
+• 🪟 Windows issues (BSOD, performance, crashes)
+• 🍎 Mac system problems (boot issues, startup problems)  
+• 🌐 Network connectivity (DNS, WiFi, adapter issues)
+• 📧 Email configuration (Outlook, SMTP, authentication)
+• 🖨️ Printer problems (drivers, spooler, connectivity)
+• ⚡ Performance optimization (slow systems, freezing)
+
+**Tips for Best Results:**
+• Be specific about your problem
+• Include error messages if you have them
+• Mention what you were doing when the issue occurred
+
+Ready to help solve your IT challenges! What's the issue?`;
+  }
+
+  if (msgLower.match(/^(thanks|thank you|bye|goodbye|good bye)(!|\.|\s)*$/)) {
+    return `✨ **You're welcome!**
+
+I'm always here to help with your IT support needs. Feel free to come back anytime you have:
+• Technical issues to troubleshoot
+• Questions about IT procedures  
+• Need for incident analysis
+• Any other IT support challenges
+
+Have a great day, and remember - no IT problem is too big or small! 👋`;
+  }
+
+  // If it's a very short query that doesn't seem technical, provide guidance
+  if (msgLower.length < 10 && !msgLower.match(/(error|issue|problem|slow|crash|blue|network|email|printer)/)) {
+    return `🤔 **I'd love to help!**
+
+Could you provide more details about the IT issue you're experiencing? 
+
+**For better assistance, try describing:**
+• What specific problem you're having
+• What device or system is affected  
+• Any error messages you're seeing
+• When the issue started
+
+**Example queries:**
+• "My laptop won't start up"
+• "Getting email authentication errors"
+• "Blue screen when I boot Windows"
+• "Network connection keeps dropping"
+
+What IT challenge can I help you solve?`;
+  }
+  
+  // Analyze the incident type for technical queries
   let incidentType = "general";
   let priority = "Medium";
   
