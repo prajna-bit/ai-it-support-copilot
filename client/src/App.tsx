@@ -9,6 +9,9 @@ import { ThemeProvider } from "@/components/ThemeProvider"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import Dashboard from "@/pages/Dashboard";
 import ChatInterface from "@/pages/ChatInterface";
+import KnowledgeBase from "@/pages/KnowledgeBase";
+import ServiceNow from "@/pages/ServiceNow";
+import Learning from "@/pages/Learning";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,12 +21,12 @@ function Router() {
       <Route path="/chat" component={ChatInterface} />
       <Route path="/dashboard" component={Dashboard} />
       
-      {/* Map sidebar routes to existing pages */}
-      <Route path="/incidents" component={Dashboard} />
-      <Route path="/knowledge" component={Dashboard} />
-      <Route path="/search" component={ChatInterface} />
+      {/* Dedicated feature pages */}
+      <Route path="/incidents" component={ServiceNow} />
+      <Route path="/knowledge" component={KnowledgeBase} />
+      <Route path="/search" component={KnowledgeBase} />
       <Route path="/reports" component={Dashboard} />
-      <Route path="/learning" component={ChatInterface} />
+      <Route path="/learning" component={Learning} />
       <Route path="/team" component={Dashboard} />
       <Route path="/settings" component={Dashboard} />
       
