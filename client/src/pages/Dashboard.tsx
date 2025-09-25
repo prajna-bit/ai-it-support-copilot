@@ -187,9 +187,11 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column - Quick Actions & Activity */}
-        <div className="space-y-6">
+        <div className="space-y-6 max-h-screen overflow-y-auto">
           <QuickActions />
-          <ActivityFeed limit={8} />
+          <div className="max-h-96 overflow-y-auto">
+            <ActivityFeed limit={8} />
+          </div>
         </div>
       </div>
     </div>

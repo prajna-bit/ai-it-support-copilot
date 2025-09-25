@@ -12,6 +12,8 @@ import ChatInterface from "@/pages/ChatInterface";
 import KnowledgeBase from "@/pages/KnowledgeBase";
 import ServiceNow from "@/pages/ServiceNow";
 import Learning from "@/pages/Learning";
+import Teams from "@/pages/Teams";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -27,8 +29,8 @@ function Router() {
       <Route path="/search" component={KnowledgeBase} />
       <Route path="/reports" component={Dashboard} />
       <Route path="/learning" component={Learning} />
-      <Route path="/team" component={Dashboard} />
-      <Route path="/settings" component={Dashboard} />
+      <Route path="/team" component={Teams} />
+      <Route path="/settings" component={Settings} />
       
       <Route component={NotFound} />
     </Switch>

@@ -172,7 +172,14 @@ export default function KnowledgeBase() {
                       ))}
                     </div>
                     
-                    <Button variant="ghost" size="sm" data-testid={`view-article-${article.id}`}>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => {
+                        alert(`Full Article: ${article.title}\n\n${article.content}`)
+                      }}
+                      data-testid={`view-article-${article.id}`}
+                    >
                       <ExternalLink className="h-4 w-4 mr-1" />
                       View Full Article
                     </Button>

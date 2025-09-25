@@ -269,7 +269,7 @@ Provide a brief analysis and recommended next steps.`;
       // Provide a basic fallback response even if other errors occur
       res.json({
         incident: {
-          number: incidentNumber,
+          number: req.params.number || "INC000000",
           title: "IT Support Incident",
           description: "Incident analysis requested",
           category: "General",

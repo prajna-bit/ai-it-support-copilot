@@ -30,6 +30,12 @@ export default function ServiceNow() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [newIncident, setNewIncident] = useState({
+    title: "",
+    description: "",
+    category: "General",
+    priority: "3-Medium"
+  })
 
   useEffect(() => {
     loadIncidents()
@@ -77,6 +83,35 @@ export default function ServiceNow() {
     if (status === "In Progress") return "default"
     if (status === "Resolved") return "secondary"
     return "outline"
+  }
+
+  const handleCreateIncident = () => {
+    if (!newIncident.title.trim() || !newIncident.description.trim()) return
+    
+    // Create new incident
+    const incident = {
+      number: `INC${Date.now().toString().slice(-7)}`,
+      title: newIncident.title,
+      description: newIncident.description,
+      category: newIncident.category,
+      priority: newIncident.priority,
+      status: "New",
+      created: new Date().toISOString()
+    }
+    
+    // Add to incidents list
+    setIncidents(prev => [incident, ...prev])
+    
+    // Reset form
+    setNewIncident({
+      title: "",
+      description: "",
+      category: "General", 
+      priority: "3-Medium"
+    })
+    setShowCreateForm(false)
+    
+    alert(`Incident ${incident.number} created successfully!`)
   }
 
   const filteredIncidents = incidents.filter(incident =>
@@ -264,6 +299,90 @@ export default function ServiceNow() {
           )}
         </div>
       </div>
+
+      {/* Create Incident Modal */}
+      {showCreateForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-md mx-4">
+            <CardHeader>
+              <CardTitle>Create New Incident</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Title</label>
+                <Input
+                  value={newIncident.title}
+                  onChange={(e) => setNewIncident({...newIncident, title: e.target.value})}
+                  placeholder="Brief description of the issue"
+                  data-testid="input-incident-title"
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Description</label>
+                <Textarea
+                  value={newIncident.description}
+                  onChange={(e) => setNewIncident({...newIncident, description: e.target.value})}
+                  placeholder="Detailed description of the issue"
+                  rows={3}
+                  data-testid="textarea-incident-description"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Category</label>
+                  <select 
+                    value={newIncident.category}
+                    onChange={(e) => setNewIncident({...newIncident, category: e.target.value})}
+                    className="w-full p-2 border rounded"
+                    data-testid="select-incident-category"
+                  >
+                    <option value="General">General</option>
+                    <option value="Hardware">Hardware</option>
+                    <option value="Software">Software</option>
+                    <option value="Network">Network</option>
+                    <option value="Email">Email</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Priority</label>
+                  <select 
+                    value={newIncident.priority}
+                    onChange={(e) => setNewIncident({...newIncident, priority: e.target.value})}
+                    className="w-full p-2 border rounded"
+                    data-testid="select-incident-priority"
+                  >
+                    <option value="1-Critical">1-Critical</option>
+                    <option value="2-High">2-High</option>
+                    <option value="3-Medium">3-Medium</option>
+                    <option value="4-Low">4-Low</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  onClick={handleCreateIncident}
+                  disabled={!newIncident.title.trim() || !newIncident.description.trim()}
+                  className="flex-1"
+                  data-testid="button-submit-incident"
+                >
+                  Create Incident
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowCreateForm(false)}
+                  data-testid="button-cancel-incident"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
