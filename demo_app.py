@@ -348,6 +348,17 @@ def home():
                     <div id="solution-result"></div>
                 </div>
                 
+                <div class="demo-section">
+                    <h3>ServiceNow Integration Demo</h3>
+                    <p style="margin-bottom: 15px;">Mock enterprise ITSM integration with incident management</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="button" onclick="loadServiceNowIncidents()">📋 Load Incidents</button>
+                        <button class="button" onclick="analyzeIncident('INC0000123')" style="background: #28a745;">🔍 Analyze INC0000123</button>
+                        <button class="button" onclick="showCreateIncident()" style="background: #ffc107; color: #333;">➕ Create New</button>
+                    </div>
+                    <div id="servicenow-result"></div>
+                </div>
+                
                 <div class="features-grid">
                     <div class="feature-card">
                         <h4>🧠 LLM Integration</h4>
@@ -362,8 +373,8 @@ def home():
                         <p>Local knowledge base storage for outage scenarios</p>
                     </div>
                     <div class="feature-card">
-                        <h4>⚡ ServiceNow Ready</h4>
-                        <p>Enterprise integration with IT service management</p>
+                        <h4>⚡ ServiceNow Integration</h4>
+                        <p>Enterprise ITSM integration with intelligent incident analysis</p>
                     </div>
                 </div>
             </div>
@@ -508,6 +519,122 @@ def home():
                 }
             }
             
+            async function loadServiceNowIncidents() {
+                try {
+                    const response = await fetch('/api/servicenow/incidents');
+                    const result = await response.json();
+                    
+                    let html = '<div class="result"><h4>📋 ServiceNow Incidents</h4>';
+                    result.incidents.forEach(incident => {
+                        html += `<div class="kb-article">
+                            <h5>${incident.number}: ${incident.short_description}</h5>
+                            <p><strong>Priority:</strong> ${incident.priority} | <strong>State:</strong> ${incident.state} | <strong>Assigned:</strong> ${incident.assigned_to}</p>
+                            <p><strong>Description:</strong> ${incident.description}</p>
+                            <p><strong>Caller:</strong> ${incident.caller} | <strong>Created:</strong> ${incident.created_on}</p>
+                            <button class="button" onclick="analyzeIncident('${incident.number}')" style="margin-top: 8px; font-size: 12px; padding: 6px 12px;">🔍 Analyze</button>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    document.getElementById('servicenow-result').innerHTML = html;
+                } catch (error) {
+                    document.getElementById('servicenow-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            async function analyzeIncident(incidentNumber) {
+                try {
+                    const response = await fetch(`/api/servicenow/incidents/${incidentNumber}/analyze`, {
+                        method: 'POST'
+                    });
+                    const result = await response.json();
+                    
+                    document.getElementById('servicenow-result').innerHTML = 
+                        `<div class="result">
+                            <h4>🔍 ServiceNow Incident Analysis: ${result.incident.number}</h4>
+                            
+                            <div class="kb-article">
+                                <h5>📋 Incident Details</h5>
+                                <p><strong>Description:</strong> ${result.incident.description}</p>
+                                <p><strong>Priority:</strong> ${result.incident.priority} | <strong>Category:</strong> ${result.incident.category}</p>
+                            </div>
+                            
+                            <div class="kb-article">
+                                <h5>🤖 AI Analysis</h5>
+                                <pre style="white-space: pre-wrap; font-family: inherit;">${result.ai_analysis.summary}</pre>
+                            </div>
+                            
+                            <div class="kb-article">
+                                <h5>💡 AI Solution</h5>
+                                <pre style="white-space: pre-wrap; font-family: inherit;">${result.ai_analysis.solution}</pre>
+                            </div>
+                            
+                            <div class="kb-article">
+                                <h5>📊 Recommendations</h5>
+                                <p><strong>Assign to:</strong> ${result.recommendations.assign_to}</p>
+                                <p><strong>Estimated resolution:</strong> ${result.recommendations.estimated_resolution}</p>
+                                <p><strong>Escalate:</strong> ${result.recommendations.escalate ? 'Yes' : 'No'}</p>
+                            </div>
+                        </div>`;
+                } catch (error) {
+                    document.getElementById('servicenow-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            function showCreateIncident() {
+                document.getElementById('servicenow-result').innerHTML = 
+                    `<div class="result">
+                        <h4>➕ Create New ServiceNow Incident</h4>
+                        <div style="margin: 15px 0;">
+                            <input type="text" id="new-incident-title" placeholder="Short description" style="width: 100%; margin: 5px 0; padding: 8px;">
+                            <textarea id="new-incident-desc" placeholder="Detailed description" style="width: 100%; height: 60px; margin: 5px 0; padding: 8px;"></textarea>
+                            <select id="new-incident-priority" style="width: 100%; margin: 5px 0; padding: 8px;">
+                                <option>1 - Critical</option>
+                                <option>2 - High</option>
+                                <option selected>3 - Medium</option>
+                                <option>4 - Low</option>
+                            </select>
+                            <button class="button" onclick="createNewIncident()">Create Incident</button>
+                        </div>
+                    </div>`;
+            }
+            
+            async function createNewIncident() {
+                const data = {
+                    short_description: document.getElementById('new-incident-title').value,
+                    description: document.getElementById('new-incident-desc').value,
+                    priority: document.getElementById('new-incident-priority').value,
+                    category: 'General',
+                    caller: 'demo.user@company.com'
+                };
+                
+                try {
+                    const response = await fetch('/api/servicenow/create-incident', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    
+                    document.getElementById('servicenow-result').innerHTML = 
+                        `<div class="result">
+                            <h4>✅ Incident Created Successfully</h4>
+                            <div class="kb-article">
+                                <h5>New Incident: ${result.incident.number}</h5>
+                                <p><strong>Title:</strong> ${result.incident.short_description}</p>
+                                <p><strong>Priority:</strong> ${result.incident.priority}</p>
+                                <p><strong>State:</strong> ${result.incident.state}</p>
+                                <p><strong>Created:</strong> ${result.incident.created_on}</p>
+                            </div>
+                            <button class="button" onclick="loadServiceNowIncidents()" style="margin-top: 10px;">📋 View All Incidents</button>
+                        </div>`;
+                } catch (error) {
+                    document.getElementById('servicenow-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
             // Auto-populate demo data for quick testing
             document.addEventListener('DOMContentLoaded', function() {
                 const demoTexts = {
@@ -616,9 +743,116 @@ def system_status():
         'timestamp': datetime.now().isoformat()
     })
 
+# ServiceNow Integration Simulation
+MOCK_INCIDENTS = [
+    {
+        "number": "INC0000123",
+        "short_description": "Outlook not connecting to Exchange server",
+        "description": "User reports Outlook cannot connect to Exchange server. Error message: 'Cannot connect to Microsoft Exchange'",
+        "state": "Open",
+        "priority": "2 - High",
+        "category": "Email",
+        "assigned_to": "L1 Support",
+        "created_on": "2024-09-25 08:30:00",
+        "caller": "john.doe@company.com"
+    },
+    {
+        "number": "INC0000124", 
+        "short_description": "Computer running very slow",
+        "description": "Employee computer takes 5+ minutes to boot and applications are very slow to respond",
+        "state": "In Progress",
+        "priority": "3 - Medium",
+        "category": "Performance",
+        "assigned_to": "L2 Support",
+        "created_on": "2024-09-25 09:15:00",
+        "caller": "jane.smith@company.com"
+    },
+    {
+        "number": "INC0000125",
+        "short_description": "Network printer offline",
+        "description": "Shared printer in accounting department shows offline status, users cannot print",
+        "state": "Open",
+        "priority": "3 - Medium", 
+        "category": "Hardware",
+        "assigned_to": "L1 Support",
+        "created_on": "2024-09-25 10:00:00",
+        "caller": "accounting@company.com"
+    }
+]
+
+@app.route('/api/servicenow/incidents', methods=['GET'])
+def get_servicenow_incidents():
+    """Mock ServiceNow incident retrieval"""
+    return jsonify({
+        'success': True,
+        'incidents': MOCK_INCIDENTS,
+        'total_count': len(MOCK_INCIDENTS),
+        'integration': 'ServiceNow Simulation',
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/api/servicenow/incidents/<incident_number>/analyze', methods=['POST'])
+def analyze_servicenow_incident(incident_number):
+    """Analyze ServiceNow incident using RAG system"""
+    incident = next((inc for inc in MOCK_INCIDENTS if inc['number'] == incident_number), None)
+    
+    if not incident:
+        return jsonify({'error': 'Incident not found'}), 404
+    
+    # Combine incident data for analysis
+    incident_text = f"{incident['short_description']} - {incident['description']}"
+    
+    # Get AI analysis
+    summary = rag_demo.summarize_incident(incident_text)
+    kb_articles = rag_demo.search_knowledge_base(incident_text)
+    solution = rag_demo.generate_solution(summary, kb_articles)
+    
+    return jsonify({
+        'success': True,
+        'incident': incident,
+        'ai_analysis': {
+            'summary': summary,
+            'solution': solution,
+            'relevant_kb': kb_articles
+        },
+        'recommendations': {
+            'escalate': incident['priority'] == '1 - Critical',
+            'assign_to': 'L2 Support' if any(word in incident_text.lower() for word in ['network', 'server', 'exchange']) else 'L1 Support',
+            'estimated_resolution': '2-4 hours' if incident['priority'] == '2 - High' else '4-8 hours'
+        },
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/api/servicenow/create-incident', methods=['POST'])
+def create_servicenow_incident():
+    """Mock incident creation in ServiceNow"""
+    data = request.get_json() or {}
+    
+    new_incident = {
+        'number': f"INC{str(uuid.uuid4())[:7].upper()}",
+        'short_description': data.get('short_description', ''),
+        'description': data.get('description', ''),
+        'state': 'Open',
+        'priority': data.get('priority', '3 - Medium'),
+        'category': data.get('category', 'General'),
+        'assigned_to': 'L1 Support',
+        'created_on': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'caller': data.get('caller', 'system@company.com')
+    }
+    
+    MOCK_INCIDENTS.append(new_incident)
+    
+    return jsonify({
+        'success': True,
+        'message': 'Incident created successfully',
+        'incident': new_incident,
+        'timestamp': datetime.now().isoformat()
+    })
+
 if __name__ == '__main__':
     print("🚀 Starting IT Support Assistant Demo for M.Tech Project")
     print("📚 Knowledge Base: 6 articles loaded")
+    print("🔧 ServiceNow Integration: Mock endpoints ready")
     print("🔗 Demo URL: http://localhost:5001")
     print("👨‍💻 By: Prajna G (2021WB86982) - BITS Pilani")
     app.run(host='0.0.0.0', port=5001, debug=True)
