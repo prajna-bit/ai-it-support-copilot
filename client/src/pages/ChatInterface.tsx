@@ -50,44 +50,50 @@ export default function ChatInterface() {
     }
 
     setMessages(prev => [...prev, userMessage])
+    const userInput = input.trim()
     setInput("")
     setIsLoading(true)
 
-    // TODO: Remove mock functionality - this will call the real AI API
-    const loadingMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: "",
-      timestamp: new Date(),
-      isLoading: true,
-    }
+    try {
+      // Call the real AI API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userInput }),
+      })
 
-    setMessages(prev => [...prev, loadingMessage])
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: `I understand you're asking about "${input.trim()}". Based on our knowledge base, here are some relevant insights:
-
-1. **Primary Considerations**: This type of issue typically involves multiple system components.
-
-2. **Diagnostic Steps**: I recommend starting with basic connectivity tests and log analysis.
-
-3. **Common Solutions**: Check the knowledge base articles I've referenced below for detailed troubleshooting steps.
-
-Would you like me to search for more specific information or help you create an incident ticket?`,
-        timestamp: new Date(),
-        sources: [
-          { title: "Troubleshooting Guide - Network Issues", relevance: 0.92 },
-          { title: "System Diagnostics Best Practices", relevance: 0.87 }
-        ],
+      if (!response.ok) {
+        throw new Error("Failed to get AI response")
       }
 
-      setMessages(prev => prev.slice(0, -1).concat([aiResponse]))
+      const data = await response.json()
+      
+      const aiResponse: Message = {
+        id: Date.now().toString(),
+        role: "assistant",
+        content: data.response,
+        timestamp: new Date(),
+        sources: data.sources?.map((source: any) => ({
+          title: source.title,
+          relevance: 0.9
+        })) || [],
+      }
+
+      setMessages(prev => [...prev, aiResponse])
+    } catch (error) {
+      console.error("Error calling AI API:", error)
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        role: "assistant",
+        content: "I apologize, but I'm having trouble connecting to the AI service right now. Please try again in a moment.",
+        timestamp: new Date(),
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
       setIsLoading(false)
-    }, 2000)
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -119,8 +125,9 @@ Would you like me to search for more specific information or help you create an 
 
   useEffect(() => {
     // Auto-scroll to bottom when new messages are added
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement
+    if (scrollElement) {
+      scrollElement.scrollTop = scrollElement.scrollHeight
     }
   }, [messages])
 
