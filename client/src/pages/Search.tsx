@@ -95,6 +95,7 @@ export default function Search() {
     // Simulate search delay
     setTimeout(() => {
       const queryLower = query.toLowerCase()
+      
       const searchResults = allSearchableContent
         .map(item => {
           let relevance = 0
@@ -104,15 +105,28 @@ export default function Search() {
             relevance += 10
           }
           
+          // Individual word matches in title
+          const queryWords = queryLower.split(' ').filter(word => word.length > 2)
+          queryWords.forEach(word => {
+            if (item.title.toLowerCase().includes(word)) {
+              relevance += 8
+            }
+            if (item.description.toLowerCase().includes(word)) {
+              relevance += 4
+            }
+          })
+          
           // Description match
           if (item.description.toLowerCase().includes(queryLower)) {
             relevance += 5
           }
           
           // Keywords match
-          const matchingKeywords = item.keywords.filter(keyword => 
-            keyword.includes(queryLower) || queryLower.includes(keyword)
-          )
+          const matchingKeywords = item.keywords.filter(keyword => {
+            const keywordLower = keyword.toLowerCase()
+            return keywordLower.includes(queryLower) || queryLower.includes(keywordLower) ||
+                   queryLower.split(' ').some(word => word.length > 2 && keywordLower.includes(word))
+          })
           relevance += matchingKeywords.length * 3
           
           // Category match
