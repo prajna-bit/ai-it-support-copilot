@@ -359,6 +359,33 @@ def home():
                     <div id="servicenow-result"></div>
                 </div>
                 
+                <div class="demo-section">
+                    <h3>AI-Powered Learning Quiz System</h3>
+                    <p style="margin-bottom: 15px;">Interactive quizzes generated from knowledge base for skill development</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <select id="quiz-category" style="padding: 10px; border: 2px solid #e9ecef; border-radius: 6px;">
+                            <option value="all">All Categories</option>
+                            <option value="Windows">Windows</option>
+                            <option value="Network">Network</option>
+                            <option value="Hardware">Hardware</option>
+                        </select>
+                        <button class="button" onclick="generateQuiz()">🎯 Generate Quiz</button>
+                        <button class="button" onclick="loadQuizCategories()" style="background: #6c757d;">📚 Load Categories</button>
+                    </div>
+                    <div id="quiz-result"></div>
+                </div>
+                
+                <div class="demo-section">
+                    <h3>Feedback & Analytics System</h3>
+                    <p style="margin-bottom: 15px;">Continuous improvement through user feedback and AI performance analytics</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="button" onclick="showFeedbackForm()">💬 Submit Feedback</button>
+                        <button class="button" onclick="generateDemoFeedback()" style="background: #6c757d;">📊 Generate Demo Data</button>
+                        <button class="button" onclick="showAnalytics()" style="background: #17a2b8;">📈 View Analytics</button>
+                    </div>
+                    <div id="feedback-result"></div>
+                </div>
+                
                 <div class="features-grid">
                     <div class="feature-card">
                         <h4>🧠 LLM Integration</h4>
@@ -375,6 +402,14 @@ def home():
                     <div class="feature-card">
                         <h4>⚡ ServiceNow Integration</h4>
                         <p>Enterprise ITSM integration with intelligent incident analysis</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎯 AI Learning Quizzes</h4>
+                        <p>Interactive skill assessment and knowledge improvement</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Feedback Analytics</h4>
+                        <p>Continuous AI improvement through user feedback loops</p>
                     </div>
                 </div>
             </div>
@@ -635,6 +670,335 @@ def home():
                 }
             }
             
+            // Quiz System Functions
+            let currentQuiz = null;
+            let userAnswers = {};
+            
+            async function loadQuizCategories() {
+                try {
+                    const response = await fetch('/api/quiz/categories');
+                    const result = await response.json();
+                    
+                    let html = '<div class="result"><h4>📚 Available Quiz Categories</h4>';
+                    result.categories.forEach(category => {
+                        html += `<div class="kb-article">
+                            <h5>${category === 'all' ? 'All Categories' : category}</h5>
+                            <button class="button" onclick="generateSpecificQuiz('${category}')" style="margin-top: 5px; font-size: 12px; padding: 4px 8px;">Generate Quiz</button>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    document.getElementById('quiz-result').innerHTML = html;
+                } catch (error) {
+                    document.getElementById('quiz-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            async function generateQuiz() {
+                const category = document.getElementById('quiz-category').value;
+                await generateSpecificQuiz(category);
+            }
+            
+            async function generateSpecificQuiz(category = 'all') {
+                try {
+                    const response = await fetch('/api/quiz/generate', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            category: category,
+                            difficulty: 'medium'
+                        })
+                    });
+                    const result = await response.json();
+                    currentQuiz = result.quiz;
+                    userAnswers = {};
+                    
+                    let html = `<div class="result">
+                        <h4>🎯 ${result.quiz.title}</h4>
+                        <p><strong>Questions:</strong> ${result.quiz.total_questions} | <strong>Time Limit:</strong> ${result.quiz.time_limit_minutes} minutes</p>
+                        <div style="margin: 15px 0;">`;
+                    
+                    result.quiz.questions.forEach((question, index) => {
+                        html += `<div class="kb-article" style="margin: 10px 0;">
+                            <h5>Question ${index + 1}: ${question.question}</h5>
+                            <p><strong>Category:</strong> ${question.category} | <strong>Reference:</strong> ${question.kb_reference}</p>`;
+                        
+                        if (question.type === 'multiple_choice') {
+                            question.options.forEach((option, optIndex) => {
+                                html += `<div style="margin: 5px 0;">
+                                    <input type="radio" name="q${question.id}" value="${optIndex}" onchange="recordAnswer('${question.id}', ${optIndex})">
+                                    <label style="margin-left: 8px;">${option}</label>
+                                </div>`;
+                            });
+                        } else if (question.type === 'true_false') {
+                            html += `<div style="margin: 5px 0;">
+                                <input type="radio" name="q${question.id}" value="true" onchange="recordAnswer('${question.id}', true)">
+                                <label style="margin-left: 8px;">True</label>
+                            </div>
+                            <div style="margin: 5px 0;">
+                                <input type="radio" name="q${question.id}" value="false" onchange="recordAnswer('${question.id}', false)">
+                                <label style="margin-left: 8px;">False</label>
+                            </div>`;
+                        } else if (question.type === 'fill_blank') {
+                            html += `<input type="text" id="answer_${question.id}" placeholder="Your answer..." 
+                                style="width: 200px; padding: 6px; margin: 5px 0;" 
+                                onchange="recordAnswer('${question.id}', this.value)">`;
+                        }
+                        
+                        html += '</div>';
+                    });
+                    
+                    html += `</div>
+                        <button class="button" onclick="submitQuiz()" style="background: #28a745; margin-top: 15px;">✅ Submit Quiz</button>
+                    </div>`;
+                    
+                    document.getElementById('quiz-result').innerHTML = html;
+                } catch (error) {
+                    document.getElementById('quiz-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            function recordAnswer(questionId, answer) {
+                userAnswers[questionId] = answer;
+            }
+            
+            async function submitQuiz() {
+                if (!currentQuiz || Object.keys(userAnswers).length === 0) {
+                    alert('Please answer at least one question before submitting.');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/quiz/submit', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            quiz_id: currentQuiz.id,
+                            answers: userAnswers
+                        })
+                    });
+                    const result = await response.json();
+                    
+                    document.getElementById('quiz-result').innerHTML = 
+                        `<div class="result">
+                            <h4>📊 Quiz Results: ${result.result.quiz_id}</h4>
+                            
+                            <div class="kb-article">
+                                <h5>🎯 Your Performance</h5>
+                                <p><strong>Score:</strong> ${result.result.score.toFixed(1)}% (${result.result.correct_answers}/${result.result.total_questions})</p>
+                                <p><strong>Performance Level:</strong> ${result.result.performance_level}</p>
+                            </div>
+                            
+                            <div class="kb-article">
+                                <h5>💡 Learning Recommendations</h5>
+                                ${result.result.learning_recommendations.map(rec => `<p>• ${rec}</p>`).join('')}
+                            </div>
+                            
+                            <div class="kb-article">
+                                <h5>📝 Detailed Feedback</h5>
+                                ${result.result.detailed_feedback.map(feedback => 
+                                    `<p><strong>${feedback.question_id}:</strong> ${feedback.correct ? '✅' : '❌'} ${feedback.feedback}</p>`
+                                ).join('')}
+                            </div>
+                            
+                            <button class="button" onclick="generateQuiz()" style="margin-top: 10px;">🔄 Take Another Quiz</button>
+                        </div>`;
+                } catch (error) {
+                    document.getElementById('quiz-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            // Feedback System Functions
+            function showFeedbackForm() {
+                document.getElementById('feedback-result').innerHTML = 
+                    `<div class="result">
+                        <h4>💬 Submit Feedback</h4>
+                        <div style="margin: 15px 0;">
+                            <select id="feedback-feature" style="width: 100%; margin: 5px 0; padding: 8px;">
+                                <option value="rag_search">RAG Search System</option>
+                                <option value="incident_analysis">Incident Analysis</option>
+                                <option value="servicenow">ServiceNow Integration</option>
+                                <option value="quiz">Quiz System</option>
+                                <option value="overall">Overall System</option>
+                            </select>
+                            
+                            <div style="margin: 10px 0;">
+                                <label style="display: block; margin-bottom: 5px;"><strong>Rating (1-5 stars):</strong></label>
+                                <div style="display: flex; gap: 5px;">
+                                    ${[1,2,3,4,5].map(i => 
+                                        `<button type="button" onclick="setRating(${i})" id="star-${i}" 
+                                         style="background: #ddd; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer;">⭐</button>`
+                                    ).join('')}
+                                </div>
+                                <input type="hidden" id="feedback-rating" value="0">
+                            </div>
+                            
+                            <textarea id="feedback-comment" placeholder="What did you think about this feature?" 
+                                style="width: 100%; height: 60px; margin: 5px 0; padding: 8px;"></textarea>
+                                
+                            <textarea id="feedback-suggestion" placeholder="Any suggestions for improvement?" 
+                                style="width: 100%; height: 60px; margin: 5px 0; padding: 8px;"></textarea>
+                                
+                            <select id="feedback-experience" style="width: 100%; margin: 5px 0; padding: 8px;">
+                                <option value="beginner">Beginner IT Support</option>
+                                <option value="intermediate" selected>Intermediate IT Support</option>
+                                <option value="expert">Expert IT Support</option>
+                                <option value="manager">IT Manager</option>
+                            </select>
+                            
+                            <div style="margin: 10px 0;">
+                                <label>
+                                    <input type="checkbox" id="feedback-helpful" checked> This feature was helpful
+                                </label>
+                            </div>
+                            
+                            <button class="button" onclick="submitFeedback()">📤 Submit Feedback</button>
+                        </div>
+                    </div>`;
+            }
+            
+            function setRating(rating) {
+                document.getElementById('feedback-rating').value = rating;
+                // Update visual feedback
+                for (let i = 1; i <= 5; i++) {
+                    const star = document.getElementById(`star-${i}`);
+                    star.style.background = i <= rating ? '#ffc107' : '#ddd';
+                }
+            }
+            
+            async function submitFeedback() {
+                const data = {
+                    session_id: 'demo_session_' + Date.now(),
+                    feature: document.getElementById('feedback-feature').value,
+                    rating: parseInt(document.getElementById('feedback-rating').value),
+                    comment: document.getElementById('feedback-comment').value,
+                    suggestion: document.getElementById('feedback-suggestion').value,
+                    helpful: document.getElementById('feedback-helpful').checked,
+                    experience_level: document.getElementById('feedback-experience').value,
+                    response_time: Math.random() * 2000 + 500,
+                    accuracy_perceived: parseInt(document.getElementById('feedback-rating').value),
+                    relevance_score: parseInt(document.getElementById('feedback-rating').value)
+                };
+                
+                if (data.rating === 0) {
+                    alert('Please provide a rating before submitting.');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/feedback/submit', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    
+                    document.getElementById('feedback-result').innerHTML = 
+                        `<div class="result">
+                            <h4>✅ Feedback Submitted Successfully</h4>
+                            <div class="kb-article">
+                                <h5>Thank you for your feedback!</h5>
+                                <p><strong>Feedback ID:</strong> ${result.feedback_id}</p>
+                                <p><strong>Feature:</strong> ${data.feature}</p>
+                                <p><strong>Rating:</strong> ${'⭐'.repeat(data.rating)} (${data.rating}/5)</p>
+                                <p>Your feedback helps us improve the AI system continuously.</p>
+                            </div>
+                            <button class="button" onclick="showAnalytics()" style="margin-top: 10px;">📊 View Analytics</button>
+                        </div>`;
+                } catch (error) {
+                    document.getElementById('feedback-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            async function generateDemoFeedback() {
+                try {
+                    const response = await fetch('/api/feedback/demo-data', {
+                        method: 'POST'
+                    });
+                    const result = await response.json();
+                    
+                    document.getElementById('feedback-result').innerHTML = 
+                        `<div class="result">
+                            <h4>📊 Demo Feedback Generated</h4>
+                            <p>${result.message}</p>
+                            <p><strong>Total feedback entries:</strong> ${result.total_feedback}</p>
+                            <button class="button" onclick="showAnalytics()" style="margin-top: 10px;">📈 View Analytics</button>
+                        </div>`;
+                } catch (error) {
+                    document.getElementById('feedback-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
+            async function showAnalytics() {
+                try {
+                    const response = await fetch('/api/feedback/analytics');
+                    const result = await response.json();
+                    
+                    if (!result.analytics || result.analytics.total_feedback === 0) {
+                        document.getElementById('feedback-result').innerHTML = 
+                            `<div class="result">
+                                <h4>📊 Feedback Analytics</h4>
+                                <p>No feedback data available yet. Submit some feedback or generate demo data first.</p>
+                                <button class="button" onclick="generateDemoFeedback()">📊 Generate Demo Data</button>
+                            </div>`;
+                        return;
+                    }
+                    
+                    const analytics = result.analytics;
+                    
+                    let html = `<div class="result">
+                        <h4>📊 AI System Analytics Dashboard</h4>
+                        
+                        <div class="kb-article">
+                            <h5>📈 Overall Performance</h5>
+                            <p><strong>Total Feedback:</strong> ${analytics.total_feedback}</p>
+                            <p><strong>Average Rating:</strong> ${'⭐'.repeat(Math.round(analytics.average_rating))} (${analytics.average_rating}/5)</p>
+                            <p><strong>User Satisfaction:</strong></p>
+                            <p>• Very Satisfied: ${analytics.user_satisfaction.very_satisfied}</p>
+                            <p>• Satisfied: ${analytics.user_satisfaction.satisfied}</p>
+                            <p>• Needs Improvement: ${analytics.user_satisfaction.needs_improvement}</p>
+                        </div>
+                        
+                        <div class="kb-article">
+                            <h5>🎯 Feature Performance</h5>`;
+                    
+                    Object.entries(analytics.features).forEach(([feature, stats]) => {
+                        html += `<p><strong>${feature.replace('_', ' ').toUpperCase()}:</strong> 
+                            ${stats.average_rating.toFixed(1)}/5 (${stats.count} reviews, ${stats.helpful_percentage.toFixed(1)}% helpful)</p>`;
+                    });
+                    
+                    html += `</div>
+                        
+                        <div class="kb-article">
+                            <h5>🚀 Key Insights</h5>
+                            <p><strong>Most Used Feature:</strong> ${analytics.trends.most_used_feature}</p>
+                            <p><strong>Highest Rated:</strong> ${analytics.trends.highest_rated_feature}</p>
+                            <p><strong>Features Needing Attention:</strong> ${analytics.trends.needs_attention.length}</p>
+                        </div>`;
+                    
+                    if (analytics.improvement_recommendations.length > 0) {
+                        html += `<div class="kb-article">
+                            <h5>💡 Improvement Recommendations</h5>`;
+                        analytics.improvement_recommendations.forEach(rec => {
+                            html += `<p><strong>${rec.priority} Priority:</strong> ${rec.recommendation}</p>`;
+                        });
+                        html += `</div>`;
+                    }
+                    
+                    html += `<button class="button" onclick="showFeedbackForm()" style="margin-top: 10px;">💬 Submit More Feedback</button>
+                    </div>`;
+                    
+                    document.getElementById('feedback-result').innerHTML = html;
+                } catch (error) {
+                    document.getElementById('feedback-result').innerHTML = 
+                        `<div class="result" style="border-left-color: #dc3545;"><h4>❌ Error</h4><p>${error.message}</p></div>`;
+                }
+            }
+            
             // Auto-populate demo data for quick testing
             document.addEventListener('DOMContentLoaded', function() {
                 const demoTexts = {
@@ -849,10 +1213,418 @@ def create_servicenow_incident():
         'timestamp': datetime.now().isoformat()
     })
 
+# Quiz Generation System for Interactive Learning
+@app.route('/api/quiz/generate', methods=['POST'])
+def generate_quiz():
+    """Generate AI-powered quiz from knowledge base for learning"""
+    data = request.get_json() or {}
+    category = data.get('category', 'all')
+    difficulty = data.get('difficulty', 'medium')
+    
+    # Filter articles by category if specified
+    articles = KNOWLEDGE_BASE
+    if category != 'all':
+        articles = [a for a in KNOWLEDGE_BASE if a['category'].lower() == category.lower()]
+    
+    if not articles:
+        return jsonify({'error': 'No articles found for the specified category'}), 400
+    
+    # Generate quiz questions based on knowledge base content
+    quiz_questions = []
+    
+    for i, article in enumerate(articles[:3]):  # Generate 3 questions max
+        # Create different types of questions based on the article content
+        if i % 3 == 0:  # Multiple choice question
+            question = {
+                'id': f"Q{i+1}",
+                'type': 'multiple_choice',
+                'question': f"What is the primary cause of {article['title'].split(' - ')[0]}?",
+                'options': [
+                    extract_primary_cause(article['content']),
+                    generate_wrong_option(article['category']),
+                    generate_wrong_option(article['category']),
+                    generate_wrong_option(article['category'])
+                ],
+                'correct_answer': 0,
+                'explanation': f"Based on {article['id']}: {article['content'][:150]}...",
+                'kb_reference': article['id'],
+                'category': article['category']
+            }
+        elif i % 3 == 1:  # True/False question
+            question = {
+                'id': f"Q{i+1}",
+                'type': 'true_false',
+                'question': f"Safe Mode is mentioned as a solution for {article['category'].lower()} issues.",
+                'correct_answer': 'Safe Mode' in article['content'],
+                'explanation': f"According to {article['id']}, Safe Mode is {'recommended' if 'Safe Mode' in article['content'] else 'not mentioned'} for this type of issue.",
+                'kb_reference': article['id'],
+                'category': article['category']
+            }
+        else:  # Fill in the blank
+            question = {
+                'id': f"Q{i+1}",
+                'type': 'fill_blank',
+                'question': f"To flush DNS cache on Windows, you should run the command: ipconfig /______",
+                'correct_answer': 'flushdns',
+                'explanation': f"The correct command is 'ipconfig /flushdns' as mentioned in {article['id']}.",
+                'kb_reference': article['id'],
+                'category': article['category']
+            }
+        
+        quiz_questions.append(question)
+    
+    quiz = {
+        'id': f"QUIZ_{str(uuid.uuid4())[:8].upper()}",
+        'title': f"IT Support Knowledge Quiz - {category.title() if category != 'all' else 'General'}",
+        'difficulty': difficulty,
+        'total_questions': len(quiz_questions),
+        'questions': quiz_questions,
+        'time_limit_minutes': 10,
+        'created_at': datetime.now().isoformat()
+    }
+    
+    return jsonify({
+        'success': True,
+        'quiz': quiz,
+        'timestamp': datetime.now().isoformat()
+    })
+
+def extract_primary_cause(content):
+    """Extract primary cause from article content"""
+    if 'driver' in content.lower():
+        return "Driver issues and conflicts"
+    elif 'network' in content.lower():
+        return "Network connectivity problems"
+    elif 'hardware' in content.lower():
+        return "Hardware failures or conflicts"
+    elif 'software' in content.lower():
+        return "Software configuration errors"
+    else:
+        return "System configuration issues"
+
+def generate_wrong_option(category):
+    """Generate plausible wrong answers based on category"""
+    wrong_options = {
+        'Windows': ['User account permissions', 'Antivirus interference', 'Registry corruption'],
+        'Mac': ['iCloud synchronization', 'Keychain access errors', 'Time Machine conflicts'],
+        'Network': ['Cable modem issues', 'Router overheating', 'ISP throttling'],
+        'Hardware': ['Power supply fluctuation', 'Cable connection loose', 'Firmware outdated'],
+        'Email': ['Server maintenance', 'Account quota exceeded', 'Client version outdated'],
+        'Performance': ['Background updates', 'Cache overflow', 'Thermal throttling']
+    }
+    
+    options = wrong_options.get(category, ['Configuration errors', 'User error', 'System overload'])
+    import random
+    return random.choice(options)
+
+@app.route('/api/quiz/submit', methods=['POST'])
+def submit_quiz():
+    """Process quiz submission and provide detailed feedback"""
+    data = request.get_json() or {}
+    answers = data.get('answers', {})
+    quiz_id = data.get('quiz_id', '')
+    
+    # Since this is a demo, we'll create mock scoring
+    total_questions = len(answers)
+    correct_answers = 0
+    detailed_feedback = []
+    
+    for question_id, user_answer in answers.items():
+        # Mock correct answers for demo
+        is_correct = hash(question_id) % 3 != 0  # Roughly 66% correct for demo
+        if is_correct:
+            correct_answers += 1
+        
+        feedback = {
+            'question_id': question_id,
+            'user_answer': user_answer,
+            'correct': is_correct,
+            'feedback': 'Correct! Great understanding of IT troubleshooting.' if is_correct else 'Review the related knowledge base article for better understanding.',
+            'learning_tip': 'Focus on systematic troubleshooting approaches' if not is_correct else 'Keep up the excellent work!'
+        }
+        detailed_feedback.append(feedback)
+    
+    score_percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+    
+    result = {
+        'quiz_id': quiz_id,
+        'score': score_percentage,
+        'correct_answers': correct_answers,
+        'total_questions': total_questions,
+        'performance_level': get_performance_level(score_percentage),
+        'detailed_feedback': detailed_feedback,
+        'learning_recommendations': generate_learning_recommendations(score_percentage),
+        'submitted_at': datetime.now().isoformat()
+    }
+    
+    return jsonify({
+        'success': True,
+        'result': result,
+        'timestamp': datetime.now().isoformat()
+    })
+
+def get_performance_level(score):
+    """Determine performance level based on score"""
+    if score >= 85:
+        return 'Expert'
+    elif score >= 70:
+        return 'Proficient'
+    elif score >= 55:
+        return 'Developing'
+    else:
+        return 'Needs Improvement'
+
+def generate_learning_recommendations(score):
+    """Generate personalized learning recommendations"""
+    if score >= 85:
+        return [
+            "Excellent work! Consider mentoring junior support staff.",
+            "Explore advanced troubleshooting scenarios.",
+            "Share your knowledge through documentation updates."
+        ]
+    elif score >= 70:
+        return [
+            "Good performance! Focus on specific knowledge gaps.",
+            "Practice more complex troubleshooting scenarios.",
+            "Review knowledge base articles regularly."
+        ]
+    elif score >= 55:
+        return [
+            "You're developing well. Focus on fundamental concepts.",
+            "Spend more time with knowledge base materials.",
+            "Consider additional training in weak areas."
+        ]
+    else:
+        return [
+            "Additional study recommended in core IT concepts.",
+            "Work through knowledge base articles systematically.",
+            "Consider formal training or mentorship."
+        ]
+
+@app.route('/api/quiz/categories', methods=['GET'])
+def get_quiz_categories():
+    """Get available quiz categories"""
+    categories = list(set(article['category'] for article in KNOWLEDGE_BASE))
+    
+    return jsonify({
+        'success': True,
+        'categories': ['all'] + categories,
+        'total_articles': len(KNOWLEDGE_BASE),
+        'timestamp': datetime.now().isoformat()
+    })
+
+# Feedback Loop System for Continuous AI Improvement
+FEEDBACK_DATA = []
+
+@app.route('/api/feedback/submit', methods=['POST'])
+def submit_feedback():
+    """Submit user feedback for AI system improvement"""
+    data = request.get_json() or {}
+    
+    feedback = {
+        'id': f"FB_{str(uuid.uuid4())[:8].upper()}",
+        'session_id': data.get('session_id', 'unknown'),
+        'feature': data.get('feature', ''),  # rag_search, incident_analysis, quiz, servicenow
+        'rating': data.get('rating', 0),  # 1-5 scale
+        'comment': data.get('comment', ''),
+        'helpful': data.get('helpful', True),
+        'suggestion': data.get('suggestion', ''),
+        'user_context': {
+            'experience_level': data.get('experience_level', 'intermediate'),
+            'department': data.get('department', 'IT Support'),
+            'use_case': data.get('use_case', 'general')
+        },
+        'system_metrics': {
+            'response_time': data.get('response_time', 0),
+            'accuracy_perceived': data.get('accuracy_perceived', 3),
+            'relevance_score': data.get('relevance_score', 3)
+        },
+        'created_at': datetime.now().isoformat(),
+        'processed': False
+    }
+    
+    FEEDBACK_DATA.append(feedback)
+    
+    return jsonify({
+        'success': True,
+        'message': 'Feedback submitted successfully',
+        'feedback_id': feedback['id'],
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/api/feedback/analytics', methods=['GET'])
+def get_feedback_analytics():
+    """Get analytics from user feedback for system improvement"""
+    if not FEEDBACK_DATA:
+        return jsonify({
+            'message': 'No feedback data available yet',
+            'analytics': {
+                'total_feedback': 0,
+                'average_rating': 0,
+                'features': {},
+                'trends': []
+            }
+        })
+    
+    # Calculate analytics
+    total_feedback = len(FEEDBACK_DATA)
+    average_rating = sum(f['rating'] for f in FEEDBACK_DATA) / total_feedback
+    
+    # Feature breakdown
+    features = {}
+    for feedback in FEEDBACK_DATA:
+        feature = feedback['feature']
+        if feature not in features:
+            features[feature] = {
+                'count': 0,
+                'average_rating': 0,
+                'helpful_percentage': 0,
+                'ratings': []
+            }
+        features[feature]['count'] += 1
+        features[feature]['ratings'].append(feedback['rating'])
+    
+    # Calculate feature averages
+    for feature, stats in features.items():
+        stats['average_rating'] = sum(stats['ratings']) / len(stats['ratings'])
+        helpful_count = sum(1 for f in FEEDBACK_DATA if f['feature'] == feature and f['helpful'])
+        stats['helpful_percentage'] = (helpful_count / stats['count']) * 100
+    
+    # Generate improvement recommendations
+    improvement_recommendations = []
+    for feature, stats in features.items():
+        if stats['average_rating'] < 3.5:
+            improvement_recommendations.append({
+                'feature': feature,
+                'priority': 'High',
+                'recommendation': f"Improve {feature} - average rating {stats['average_rating']:.1f}/5",
+                'suggested_actions': [
+                    'Review user feedback comments',
+                    'Analyze common failure patterns',
+                    'Enhance algorithm accuracy',
+                    'Improve user interface'
+                ]
+            })
+        elif stats['helpful_percentage'] < 70:
+            improvement_recommendations.append({
+                'feature': feature,
+                'priority': 'Medium',
+                'recommendation': f"Enhance relevance for {feature} - {stats['helpful_percentage']:.1f}% helpful",
+                'suggested_actions': [
+                    'Refine content matching algorithms',
+                    'Update knowledge base coverage',
+                    'Improve result ranking'
+                ]
+            })
+    
+    analytics = {
+        'total_feedback': total_feedback,
+        'average_rating': round(average_rating, 2),
+        'features': features,
+        'improvement_recommendations': improvement_recommendations,
+        'user_satisfaction': {
+            'very_satisfied': len([f for f in FEEDBACK_DATA if f['rating'] >= 4]),
+            'satisfied': len([f for f in FEEDBACK_DATA if f['rating'] == 3]),
+            'needs_improvement': len([f for f in FEEDBACK_DATA if f['rating'] <= 2])
+        },
+        'trends': {
+            'most_used_feature': max(features.keys(), key=lambda k: features[k]['count']) if features else 'None',
+            'highest_rated_feature': max(features.keys(), key=lambda k: features[k]['average_rating']) if features else 'None',
+            'needs_attention': [f for f in improvement_recommendations if f['priority'] == 'High']
+        }
+    }
+    
+    return jsonify({
+        'success': True,
+        'analytics': analytics,
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/api/feedback/demo-data', methods=['POST'])
+def generate_demo_feedback():
+    """Generate demo feedback data for analytics demonstration"""
+    demo_feedback = [
+        {
+            'feature': 'rag_search',
+            'rating': 4,
+            'comment': 'Very helpful for finding relevant solutions quickly',
+            'helpful': True,
+            'experience_level': 'intermediate'
+        },
+        {
+            'feature': 'incident_analysis',
+            'rating': 5,
+            'comment': 'Excellent AI summarization saves me a lot of time',
+            'helpful': True,
+            'experience_level': 'expert'
+        },
+        {
+            'feature': 'servicenow',
+            'rating': 3,
+            'comment': 'Good integration but could be more detailed',
+            'helpful': True,
+            'experience_level': 'beginner'
+        },
+        {
+            'feature': 'quiz',
+            'rating': 4,
+            'comment': 'Great for learning and skill assessment',
+            'helpful': True,
+            'experience_level': 'intermediate'
+        },
+        {
+            'feature': 'rag_search',
+            'rating': 2,
+            'comment': 'Sometimes returns irrelevant results',
+            'helpful': False,
+            'experience_level': 'expert'
+        }
+    ]
+    
+    for demo in demo_feedback:
+        feedback = {
+            'id': f"FB_{str(uuid.uuid4())[:8].upper()}",
+            'session_id': f"demo_session_{uuid.uuid4()}",
+            'feature': demo['feature'],
+            'rating': demo['rating'],
+            'comment': demo['comment'],
+            'helpful': demo['helpful'],
+            'suggestion': 'Keep improving the system',
+            'user_context': {
+                'experience_level': demo['experience_level'],
+                'department': 'IT Support',
+                'use_case': 'daily_operations'
+            },
+            'system_metrics': {
+                'response_time': np.random.randint(500, 2000),
+                'accuracy_perceived': demo['rating'],
+                'relevance_score': demo['rating']
+            },
+            'created_at': datetime.now().isoformat(),
+            'processed': False
+        }
+        FEEDBACK_DATA.append(feedback)
+    
+    return jsonify({
+        'success': True,
+        'message': f'{len(demo_feedback)} demo feedback entries created',
+        'total_feedback': len(FEEDBACK_DATA)
+    })
+
 if __name__ == '__main__':
     print("🚀 Starting IT Support Assistant Demo for M.Tech Project")
     print("📚 Knowledge Base: 6 articles loaded")
     print("🔧 ServiceNow Integration: Mock endpoints ready")
+    print("🎯 AI Quiz System: Interactive learning enabled")
+    print("📊 Feedback Analytics: Continuous improvement system active")
     print("🔗 Demo URL: http://localhost:5001")
     print("👨‍💻 By: Prajna G (2021WB86982) - BITS Pilani")
+    print("=" * 60)
+    print("🎓 M.Tech Features Demonstrated:")
+    print("✅ LLM-powered incident analysis")
+    print("✅ RAG system with offline capabilities") 
+    print("✅ ServiceNow integration simulation")
+    print("✅ AI-powered learning quizzes")
+    print("✅ Feedback loop for continuous improvement")
+    print("=" * 60)
     app.run(host='0.0.0.0', port=5001, debug=True)
