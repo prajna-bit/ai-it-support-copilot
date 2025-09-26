@@ -139,7 +139,7 @@ python demo_app.py
 │   │   └── lib/          # Utilities and configurations
 ├── server/                # Node.js Express backend
 ├── shared/                # Shared TypeScript schemas
-├── app.py                 # Python AI/ML backend
+├── bot.py                 # Python AI/ML backend
 ├── demo_app.py           # Standalone Python demo
 └── README.md             # This file
 ```
