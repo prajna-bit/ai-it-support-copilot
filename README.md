@@ -1,27 +1,27 @@
 # IT Support Assistant - AI-Powered Co-Pilot for Support Engineers
 
-## 🎯 Project Overview
+## Project Overview
 
 This project demonstrates an **AI-powered IT Support Assistant** using **Large Language Models (LLM)** and **Offline Retrieval-Augmented Generation (RAG)** to help support engineers efficiently handle incidents, search knowledge bases, and get contextual recommendations.
 
-## 🚀 Key Features
+## Key Features
 
-### 🧠 **Core AI Capabilities**
+### **Core AI Capabilities**
 - **LLM Integration**: GPT-4 powered incident analysis and intelligent summarization
 - **RAG System**: Retrieval-Augmented Generation with semantic knowledge search  
 - **Offline Capabilities**: Local knowledge base storage for outage scenarios
 
-### 🏢 **Enterprise Integration**
+### **Enterprise Integration**
 - **ServiceNow Simulation**: Mock ITSM with incident management and AI analysis
 - **Knowledge Base**: Comprehensive IT support articles with intelligent search
 - **Incident Analysis**: Smart categorization and solution recommendations
 
-### 📚 **Learning & Improvement**
+### **Learning & Improvement**
 - **AI Quiz System**: Interactive quizzes generated from knowledge base content
 - **Performance Analytics**: Detailed scoring with personalized learning recommendations  
 - **Feedback Loop**: User feedback system with analytics dashboard for continuous AI improvement
 
-## 🛠 **Tech Stack**
+## **Tech Stack**
 
 **Frontend:**
 - React 18 with TypeScript
@@ -41,7 +41,7 @@ This project demonstrates an **AI-powered IT Support Assistant** using **Large L
 - Scikit-learn for similarity calculations
 - Custom RAG implementation
 
-## 📋 **Setup Instructions for Local Development**
+## **Setup Instructions for Local Development**
 
 ### Prerequisites
 - Node.js 18+ and npm
@@ -86,7 +86,7 @@ python demo_app.py
 - Access at: `http://localhost:5001`  
 - Features: Standalone Python demo with all AI features in one interface
 
-## 🎮 **Key Features Demo**
+## **Key Features Demo**
 
 ### **Core Functionality:**
 
@@ -122,14 +122,14 @@ python demo_app.py
 - **Production Ready**: Includes authentication, session management, and security features
 - **Enterprise Integration**: ServiceNow simulation shows real-world applicability
 
-## 🏗 **Technical Innovation**
+## **Technical Innovation**
 
 1. **Novel RAG Architecture**: Offline-capable retrieval system for IT support scenarios
 2. **LLM Integration**: Practical application of GPT-4 for incident analysis
 3. **Continuous Learning**: Feedback loop system for AI improvement
 4. **Enterprise Readiness**: Production-grade architecture with ITSM integration
 
-## 🔧 **Project Structure**
+## **Project Structure**
 
 ```
 ├── client/                 # React TypeScript frontend
@@ -144,7 +144,7 @@ python demo_app.py
 └── README.md             # This file
 ```
 
-## 🏆 **Technical Highlights**
+## **Technical Highlights**
 
 - **Technical Innovation**: Novel offline RAG implementation
 - **Practical Application**: Real-world IT support use case
@@ -153,7 +153,7 @@ python demo_app.py
 - **User Experience**: Professional UI/UX design
 - **Scalability**: Enterprise-ready design patterns
 
-## 📈 **Future Enhancements**
+## **Future Enhancements**
 
 - Integration with additional ITSM platforms
 - Advanced analytics and reporting capabilities
