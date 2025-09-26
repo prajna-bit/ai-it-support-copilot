@@ -19,8 +19,8 @@ export default function KnowledgeBase() {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState("all")
 
-  const searchArticles = async (query: string = searchQuery) => {
-    if (!query.trim() && selectedCategory === "all") {
+  const searchArticles = async (query: string = searchQuery, category: string = selectedCategory) => {
+    if (!query.trim() && category === "all") {
       // Load all articles
       loadAllArticles()
       return
@@ -30,7 +30,7 @@ export default function KnowledgeBase() {
     try {
       const params = new URLSearchParams()
       if (query.trim()) params.set('q', query.trim())
-      if (selectedCategory !== "all") params.set('category', selectedCategory)
+      if (category !== "all") params.set('category', category)
       
       const response = await fetch(`/api/knowledge-base/search?${params}`)
       if (response.ok) {
@@ -114,7 +114,7 @@ export default function KnowledgeBase() {
                 size="sm"
                 onClick={() => {
                   setSelectedCategory(category)
-                  searchArticles()
+                  searchArticles(searchQuery, category)
                 }}
                 data-testid={`filter-${category}`}
               >
