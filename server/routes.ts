@@ -272,12 +272,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let results = KNOWLEDGE_BASE;
       
-      if (query) {
-        results = searchKnowledgeBase(query as string);
-      }
-      
+      // First filter by category if specified
       if (category && category !== 'all') {
         results = results.filter(kb => kb.category.toLowerCase() === (category as string).toLowerCase());
+      }
+      
+      // Then apply search query if provided
+      if (query && query.trim()) {
+        results = searchKnowledgeBaseFromList(results, query as string);
       }
       
       res.json({
@@ -803,6 +805,43 @@ function searchKnowledgeBase(query: string, limit: number = 5) {
   const results: Array<{ score: number; article: any }> = [];
   
   for (const article of KNOWLEDGE_BASE) {
+    let score = 0;
+    const searchText = `${article.title} ${article.content} ${article.tags.join(' ')}`.toLowerCase();
+    
+    for (const word of queryWords) {
+      if (searchText.includes(word)) {
+        // Title matches score higher
+        if (article.title.toLowerCase().includes(word)) {
+          score += 3;
+        }
+        // Tag matches score medium
+        if (article.tags.some(tag => tag.toLowerCase().includes(word))) {
+          score += 2;
+        }
+        // Content matches score lower
+        if (article.content.toLowerCase().includes(word)) {
+          score += 1;
+        }
+      }
+    }
+    
+    if (score > 0) {
+      results.push({ score, article });
+    }
+  }
+  
+  return results
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(r => r.article);
+}
+
+// Helper function to search within a pre-filtered list of articles
+function searchKnowledgeBaseFromList(articles: any[], query: string, limit: number = 20) {
+  const queryWords = query.toLowerCase().split(/\s+/);
+  const results: Array<{ score: number; article: any }> = [];
+  
+  for (const article of articles) {
     let score = 0;
     const searchText = `${article.title} ${article.content} ${article.tags.join(' ')}`.toLowerCase();
     

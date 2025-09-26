@@ -73,7 +73,7 @@ export default function KnowledgeBase() {
     }
   }
 
-  const categories = ["all", "Windows", "Mac", "Network", "Email", "Hardware", "Performance"]
+  const categories = ["all", "Windows", "Mac", "Network", "Email", "Hardware", "Performance", "Security", "Database", "Mobile", "Server", "Communication", "Collaboration", "Software", "Linux", "Backup"]
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
