@@ -1,14 +1,10 @@
 # IT Support Assistant - AI-Powered Co-Pilot for Support Engineers
 
-**M.Tech Dissertation Project**  
-**Student:** Prajna G (2021WB86982)  
-**Institution:** BITS Pilani  
-
 ## 🎯 Project Overview
 
 This project demonstrates an **AI-powered IT Support Assistant** using **Large Language Models (LLM)** and **Offline Retrieval-Augmented Generation (RAG)** to help support engineers efficiently handle incidents, search knowledge bases, and get contextual recommendations.
 
-## 🚀 Key Features Demonstrated
+## 🚀 Key Features
 
 ### 🧠 **Core AI Capabilities**
 - **LLM Integration**: GPT-4 powered incident analysis and intelligent summarization
@@ -76,12 +72,12 @@ SESSION_SECRET=your_session_secret_here
 
 ### 4. Run the Application
 
-**Option A: Full Stack Application (Recommended for Demo)**
+**Option A: Full Stack Application (Recommended)**
 ```bash
 npm run dev
 ```
 - Access at: `http://localhost:5000`
-- Features: Complete TypeScript app with chat interface, dashboard, and all M.Tech features
+- Features: Complete TypeScript app with chat interface, dashboard, and all core features
 
 **Option B: Python Demo System (Standalone)**
 ```bash
@@ -90,9 +86,9 @@ python demo_app.py
 - Access at: `http://localhost:5001`  
 - Features: Standalone Python demo with all AI features in one interface
 
-## 🎓 **For M.Tech Presentation**
+## 🎮 **Key Features Demo**
 
-### **Demonstrating Key Features:**
+### **Core Functionality:**
 
 1. **Incident Summarization Bot**
    - Navigate to `/chat` in the main app
@@ -126,7 +122,7 @@ python demo_app.py
 - **Production Ready**: Includes authentication, session management, and security features
 - **Enterprise Integration**: ServiceNow simulation shows real-world applicability
 
-## 📊 **M.Tech Research Contributions**
+## 🏗 **Technical Innovation**
 
 1. **Novel RAG Architecture**: Offline-capable retrieval system for IT support scenarios
 2. **LLM Integration**: Practical application of GPT-4 for incident analysis
@@ -148,7 +144,7 @@ python demo_app.py
 └── README.md             # This file
 ```
 
-## 🏆 **Academic Evaluation Points**
+## 🏆 **Technical Highlights**
 
 - **Technical Innovation**: Novel offline RAG implementation
 - **Practical Application**: Real-world IT support use case
@@ -157,9 +153,14 @@ python demo_app.py
 - **User Experience**: Professional UI/UX design
 - **Scalability**: Enterprise-ready design patterns
 
-## 📞 **Contact**
+## 📈 **Future Enhancements**
 
-**Student:** Prajna G  
-**Roll No:** 2021WB86982  
-**Institution:** BITS Pilani  
-**Project:** IT Support Assist: AI-Powered Co-Pilot for Support Engineers Using LLM and Offline RAG
+- Integration with additional ITSM platforms
+- Advanced analytics and reporting capabilities
+- Multi-language support for global teams
+- Mobile application for on-the-go support
+- Enhanced offline capabilities with local LLM options
+
+---
+
+**IT Support Assistant** - Revolutionizing enterprise IT support with AI-powered intelligence and seamless workflow integration.
