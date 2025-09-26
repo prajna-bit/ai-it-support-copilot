@@ -91,6 +91,118 @@ class ITSupportRAG:
                 "category": "Performance",
                 "content": "System slowdown affects user productivity. Optimization steps: 1) Check resource usage in Task Manager 2) Disable startup programs 3) Run disk cleanup 4) Defragment hard drive 5) Scan for malware 6) Update drivers 7) Add more RAM if needed 8) Clean temporary files. Monitor CPU and memory usage patterns.",
                 "tags": ["Performance", "Optimization", "Memory", "CPU", "Cleanup"]
+            },
+            {
+                "id": "KB007",
+                "title": "VPN Connection Problems and Solutions",
+                "category": "Network",
+                "content": "VPN connectivity issues affect remote work productivity. Common problems: 1) Check internet connection first 2) Verify VPN credentials 3) Try different VPN servers 4) Disable firewall temporarily 5) Update VPN client software 6) Clear DNS cache 7) Restart network adapters 8) Check for IP conflicts. For corporate VPNs, contact IT admin for server status.",
+                "tags": ["VPN", "Remote Work", "Network", "Authentication", "Security"]
+            },
+            {
+                "id": "KB008",
+                "title": "Windows Update Stuck or Failing",
+                "category": "Windows",
+                "content": "Windows Update failures can cause security vulnerabilities. Troubleshooting: 1) Run Windows Update Troubleshooter 2) Restart Windows Update services 3) Clear SoftwareDistribution folder 4) Use DISM and SFC commands 5) Download updates manually 6) Check disk space availability 7) Temporarily disable antivirus 8) Reset Windows Update components using command line tools.",
+                "tags": ["Windows Update", "System Updates", "Security", "Troubleshooting"]
+            },
+            {
+                "id": "KB009",
+                "title": "Password Reset and Account Lockout Issues",
+                "category": "Security",
+                "content": "Account access problems require immediate attention. Resolution steps: 1) Verify account status in Active Directory 2) Check for multiple failed login attempts 3) Reset password using admin tools 4) Unlock account if needed 5) Clear cached credentials 6) Verify password policy compliance 7) Check for time synchronization issues 8) Update security questions if available.",
+                "tags": ["Password", "Account", "Security", "Active Directory", "Authentication"]
+            },
+            {
+                "id": "KB010",
+                "title": "Hard Drive Corruption and Data Recovery",
+                "category": "Hardware",
+                "content": "Hard drive issues can lead to data loss. Emergency procedures: 1) Stop using the drive immediately 2) Run CHKDSK for minor corruption 3) Use disk diagnostic tools 4) Attempt data recovery software 5) Check physical connections 6) Boot from external media 7) Professional data recovery for critical files 8) Implement backup verification protocols.",
+                "tags": ["Hard Drive", "Data Recovery", "Corruption", "Backup", "Critical"]
+            },
+            {
+                "id": "KB011",
+                "title": "Wi-Fi Authentication and Connection Problems", 
+                "category": "Network",
+                "content": "Wireless connectivity issues in enterprise environments. Solutions: 1) Forget and reconnect to network 2) Update wireless drivers 3) Check enterprise authentication settings 4) Verify certificates and profiles 5) Reset network stack 6) Check for MAC address filtering 7) Update wireless adapter firmware 8) Use ethernet cable for temporary access.",
+                "tags": ["Wi-Fi", "Wireless", "Authentication", "Enterprise", "Drivers"]
+            },
+            {
+                "id": "KB012",
+                "title": "Software Installation and Compatibility Issues",
+                "category": "Software",
+                "content": "Application deployment problems affect user productivity. Resolution: 1) Check system requirements compatibility 2) Run as administrator 3) Disable antivirus during installation 4) Clear temporary installation files 5) Use compatibility mode for older software 6) Check for conflicting applications 7) Repair Windows Installer service 8) Use MSI installation packages when available.",
+                "tags": ["Software", "Installation", "Compatibility", "Applications", "Deployment"]
+            },
+            {
+                "id": "KB013",
+                "title": "Database Connection Timeout and Performance",
+                "category": "Database", 
+                "content": "Database connectivity affects business applications. Troubleshooting: 1) Check database server status 2) Verify connection strings 3) Test network connectivity to database server 4) Check database logs for errors 5) Optimize query performance 6) Verify user permissions 7) Check connection pool settings 8) Monitor database resource usage and locks.",
+                "tags": ["Database", "Connection", "Performance", "SQL", "Server"]
+            },
+            {
+                "id": "KB014",
+                "title": "Mobile Device MDM Enrollment Problems",
+                "category": "Mobile",
+                "content": "Mobile Device Management enrollment issues. Steps: 1) Verify device compatibility with MDM 2) Check network connectivity 3) Clear device management profiles 4) Re-enroll device in MDM system 5) Verify user permissions in MDM console 6) Check certificate validity 7) Update device OS to latest version 8) Factory reset as last resort with proper data backup.",
+                "tags": ["Mobile", "MDM", "Enrollment", "BYOD", "Security"]
+            },
+            {
+                "id": "KB015",
+                "title": "Server Memory and CPU High Usage Alerts",
+                "category": "Server",
+                "content": "Server performance monitoring and optimization. Actions: 1) Identify top resource-consuming processes 2) Check for memory leaks in applications 3) Review server performance baselines 4) Implement process monitoring 5) Schedule server maintenance windows 6) Optimize database queries 7) Add more RAM or CPU if hardware limitation 8) Implement load balancing for high-traffic applications.",
+                "tags": ["Server", "Performance", "Memory", "CPU", "Monitoring"]
+            },
+            {
+                "id": "KB016",
+                "title": "Microsoft Teams Audio and Video Issues",
+                "category": "Communication",
+                "content": "Teams meeting problems affect remote collaboration. Solutions: 1) Check microphone and camera permissions 2) Update Teams application 3) Test audio/video in Teams settings 4) Clear Teams cache and cookies 5) Restart Teams application 6) Check firewall and proxy settings 7) Use Teams web version as backup 8) Update audio/video drivers.",
+                "tags": ["Teams", "Audio", "Video", "Meetings", "Communication"]
+            },
+            {
+                "id": "KB017",
+                "title": "Ransomware Detection and Response Protocol",
+                "category": "Security",
+                "content": "Ransomware incident response procedures. Immediate actions: 1) Isolate infected systems from network 2) Do not pay ransom demands 3) Identify ransomware variant 4) Check backup integrity and availability 5) Run anti-malware scans on clean systems 6) Document incident for forensics 7) Restore from clean backups 8) Implement additional security measures to prevent reinfection.",
+                "tags": ["Ransomware", "Security", "Incident Response", "Malware", "Critical"]
+            },
+            {
+                "id": "KB018",
+                "title": "SharePoint Access Denied and Permission Issues",
+                "category": "Collaboration",
+                "content": "SharePoint permission problems affect document collaboration. Resolution: 1) Check user permissions in SharePoint admin 2) Verify group memberships 3) Clear browser cache and cookies 4) Try incognito/private browsing mode 5) Check SharePoint service health 6) Re-authenticate user credentials 7) Grant appropriate permission levels 8) Check for site collection administrator rights.",
+                "tags": ["SharePoint", "Permissions", "Access", "Collaboration", "Documents"]
+            },
+            {
+                "id": "KB019",
+                "title": "USB Device Not Recognized or Malfunctioning",
+                "category": "Hardware",
+                "content": "USB connectivity problems with peripherals. Troubleshooting: 1) Try different USB ports 2) Test device on another computer 3) Update USB drivers 4) Check Device Manager for errors 5) Uninstall and reinstall USB controllers 6) Run Hardware and Devices troubleshooter 7) Check USB power management settings 8) Disable USB selective suspend.",
+                "tags": ["USB", "Hardware", "Peripherals", "Drivers", "Device Manager"]
+            },
+            {
+                "id": "KB020",
+                "title": "Exchange Server Mailbox Full and Email Delivery Issues",
+                "category": "Email",
+                "content": "Exchange mailbox storage and delivery problems. Solutions: 1) Check mailbox storage quota limits 2) Archive old emails to reduce size 3) Empty deleted items folder 4) Check mail routing and connectors 5) Verify DNS MX records 6) Test email flow with message tracking 7) Check Exchange service health 8) Implement mailbox size policies and user training.",
+                "tags": ["Exchange", "Mailbox", "Storage", "Email Delivery", "Server"]
+            },
+            {
+                "id": "KB021",
+                "title": "Linux Server SSH Connection and Permission Denied",
+                "category": "Linux",
+                "content": "SSH access problems on Linux servers. Troubleshooting: 1) Check SSH service status (systemctl status ssh) 2) Verify user account exists and password 3) Check SSH configuration file permissions 4) Review /var/log/auth.log for errors 5) Verify firewall rules (iptables/ufw) 6) Check SSH key permissions (chmod 600) 7) Test SSH connection with verbose output 8) Verify SELinux/AppArmor policies.",
+                "tags": ["Linux", "SSH", "Server", "Permissions", "Authentication"]
+            },
+            {
+                "id": "KB022",
+                "title": "Backup System Failure and Recovery Procedures",
+                "category": "Backup",
+                "content": "Backup system failures require immediate attention. Actions: 1) Check backup software logs for errors 2) Verify backup storage space availability 3) Test backup media integrity 4) Check network connectivity to backup destinations 5) Verify backup schedules and policies 6) Test restore procedures on non-production data 7) Document backup failure incidents 8) Implement redundant backup strategies.",
+                "tags": ["Backup", "Recovery", "Data Protection", "Storage", "Critical"]
             }
         ]
         
