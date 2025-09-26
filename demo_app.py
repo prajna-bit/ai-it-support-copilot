@@ -147,12 +147,12 @@ rag_demo = SimpleRAGDemo()
 
 @app.route('/')
 def home():
-    """Demo interface for M.Tech presentation"""
+    """Demo interface for IT Support Assistant"""
     return render_template_string("""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>IT Support Assistant - M.Tech Demo</title>
+        <title>IT Support Assistant - Demo</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
@@ -1085,7 +1085,7 @@ def get_solution():
 
 @app.route('/api/status', methods=['GET'])
 def system_status():
-    """System status for M.Tech demo"""
+    """System status for demo"""
     return jsonify({
         'status': 'online',
         'service': 'IT Support Assistant RAG Demo',
@@ -1097,11 +1097,11 @@ def system_status():
             'offline_mode': 'enabled',
             'servicenow_ready': 'enabled'
         },
-        'mtech_project': {
-            'student': 'Prajna G',
-            'id': '2021WB86982',
-            'supervisor': 'Sindhuja L',
-            'institution': 'BITS Pilani'
+        'project_info': {
+            'name': 'IT Support Assistant',
+            'description': 'AI-Powered Support Co-pilot with RAG',
+            'version': '1.0.0',
+            'technology': 'OpenAI GPT + Semantic Search'
         },
         'timestamp': datetime.now().isoformat()
     })
@@ -1611,15 +1611,15 @@ def generate_demo_feedback():
     })
 
 if __name__ == '__main__':
-    print("🚀 Starting IT Support Assistant Demo for M.Tech Project")
+    print("🚀 Starting IT Support Assistant Demo System")
     print("📚 Knowledge Base: 6 articles loaded")
     print("🔧 ServiceNow Integration: Mock endpoints ready")
     print("🎯 AI Quiz System: Interactive learning enabled")
     print("📊 Feedback Analytics: Continuous improvement system active")
     print("🔗 Demo URL: http://localhost:5001")
-    print("👨‍💻 By: Prajna G (2021WB86982) - BITS Pilani")
+    print("🤖 AI-Powered IT Support Co-pilot")
     print("=" * 60)
-    print("🎓 M.Tech Features Demonstrated:")
+    print("🎪 Core Features Available:")
     print("✅ LLM-powered incident analysis")
     print("✅ RAG system with offline capabilities") 
     print("✅ ServiceNow integration simulation")
