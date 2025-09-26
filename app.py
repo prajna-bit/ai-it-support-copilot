@@ -1,8 +1,7 @@
 """
-IT Support Assist: AI-Powered Co-Pilot for Support Engineers
-M.Tech Project by Prajna G (2021WB86982)
+IT Support Assistant: AI-Powered Co-Pilot for Support Engineers
 
-Core RAG system with OpenAI integration for offline IT support assistance
+Core RAG system with OpenAI integration for intelligent IT support assistance
 """
 
 import os
@@ -217,7 +216,7 @@ def home():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>IT Support Assistant - M.Tech Project</title>
+        <title>IT Support Assistant - RAG System</title>
         <style>
             body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
             .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
@@ -235,8 +234,8 @@ def home():
             <div class="header">
                 <h1>🔧 IT Support Assistant</h1>
                 <h2>AI-Powered Co-Pilot with Offline RAG</h2>
-                <p><strong>M.Tech Project by Prajna G (2021WB86982)</strong></p>
-                <p>Supervisor: Sindhuja L | BITS Pilani</p>
+                <p><strong>Intelligent Enterprise IT Support Solution</strong></p>
+                <p>Advanced RAG System for Support Teams</p>
             </div>
             
             <div class="section">

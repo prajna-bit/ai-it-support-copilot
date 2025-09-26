@@ -1,7 +1,6 @@
 """
-IT Support Assist: AI-Powered Co-Pilot - M.Tech Demo Version
-Quick demo for presentation - works without API calls for offline capability
-By Prajna G (2021WB86982) - BITS Pilani
+IT Support Assistant: AI-Powered Co-Pilot
+Offline-capable version for demonstrations and fallback scenarios
 """
 
 import json
@@ -313,8 +312,8 @@ def home():
             <div class="header">
                 <h1>🤖 IT Support Assistant</h1>
                 <h2>AI-Powered Co-Pilot with Offline RAG</h2>
-                <p><strong>M.Tech Dissertation Project</strong> | Prajna G (2021WB86982) | BITS Pilani</p>
-                <p>Supervisor: Sindhuja L | Wipro Technologies</p>
+                <p><strong>Intelligent IT Support Solution</strong></p>
+                <p>Advanced RAG System for Enterprise Support Teams</p>
             </div>
             
             <div class="status-bar">
